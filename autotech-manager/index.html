@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoTech Manager Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #a855f7;
+            --bg-body: #0f172a; /* Dark Slate 900 */
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-bg: rgba(30, 41, 59, 0.7); /* Slate 800 with opacity */
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            color: #e2e8f0; /* Slate 200 */
+        }
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar-link {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .sidebar-link:hover, .sidebar-link.active {
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
+            color: #818cf8; /* Indigo 400 */
+            border-right: 3px solid #6366f1;
+        }
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        .animate-slide-in {
+            animation: slideIn 0.4s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+        
+        .view-section { display: none; }
+        .view-section.active { display: block; }
+        
+        /* Input Autofill Fix for Dark Mode */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover, 
+        input:-webkit-autofill:focus, 
+        input:-webkit-autofill:active{
+            -webkit-box-shadow: 0 0 0 30px #1e293b inset !important;
+            -webkit-text-fill-color: white !important;
+        }
+    </style>
+</head>
+<body class="h-screen flex overflow-hidden selection:bg-indigo-500/30 selection:text-indigo-200">
+    <!-- Sidebar -->
+    <aside class="w-72 glass z-20 flex flex-col transition-all duration-300 relative border-r border-white/5">
+        <div class="p-8 flex items-center gap-3">
+            <div class="w-10 h-10 bg-gradient-to-tr from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/30 text-white">
+                <i data-lucide="wrench" class="w-6 h-6"></i>
+            </div>
+            <h1 class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400 tracking-tight">AutoTech<span class="font-light">Pro</span></h1>
+        </div>
+
+        <nav class="flex-1 px-4 space-y-2 overflow-y-auto py-4">
+            <a href="#" onclick="router.navigate('dashboard')" id="nav-dashboard" class="sidebar-link active flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-100">
+                <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
+            </a>
+            <a href="#" onclick="router.navigate('vehicles')" id="nav-vehicles" class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-100">
+                <i data-lucide="car" class="w-5 h-5"></i> Veículos
+            </a>
+            <a href="#" onclick="router.navigate('mechanics')" id="nav-mechanics" class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-100">
+                <i data-lucide="users" class="w-5 h-5"></i> Mecânicos
+            </a>
+            <a href="#" onclick="router.navigate('new-order')" id="nav-new-order" class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-100">
+                <i data-lucide="file-plus" class="w-5 h-5"></i> Nova OS
+            </a>
+            <a href="#" onclick="router.navigate('history')" id="nav-history" class="sidebar-link flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-100">
+                <i data-lucide="history" class="w-5 h-5"></i> Histórico
+            </a>
+        </nav>
+
+        <div class="p-4 m-4 glass-panel rounded-2xl bg-gradient-to-br from-indigo-900/50 to-purple-900/50 border border-white/10 text-white shadow-xl relative overflow-hidden group">
+            <div class="absolute top-0 right-0 -mt-2 -mr-2 w-24 h-24 bg-white/5 rounded-full blur-2xl group-hover:bg-white/10 transition-all"></div>
+            <div class="relative z-10 flex items-center gap-3">
+                <img src="https://ui-avatars.com/api/?name=Admin+User&background=random&color=fff" class="w-10 h-10 rounded-full border-2 border-white/20">
+                <div>
+                    <p class="text-sm font-bold text-slate-100">Administrador</p>
+                    <p class="text-xs text-indigo-300">Gerente Geral</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col relative overflow-hidden">
+        <!-- Header -->
+        <header class="h-20 glass z-10 flex items-center justify-between px-8 sticky top-0 border-b border-white/5">
+            <div class="flex items-center text-slate-400 text-sm">
+                <span class="mr-2">Aplicativo</span>
+                <i data-lucide="chevron-right" class="w-4 h-4 mx-1"></i>
+                <span class="text-slate-200 font-medium" id="page-title">Visão Geral</span>
+            </div>
+            <div class="flex items-center gap-6">
+                <button class="relative p-2 text-slate-400 hover:text-indigo-400 transition-colors">
+                    <i data-lucide="bell" class="w-5 h-5"></i>
+                    <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-slate-900"></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Content Scrollable Area -->
+        <div class="flex-1 overflow-y-auto p-8 scroll-smooth">
+            <!-- VIEW: DASHBOARD -->
+            <div id="view-dashboard" class="view-section active animate-fade-in">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <!-- Card 1 -->
+                    <div class="glass-panel p-6 rounded-2xl hover-lift">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-indigo-500/10 rounded-xl text-indigo-400">
+                                <i data-lucide="clipboard-list" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-lg border border-emerald-500/20">+12%</span>
+                        </div>
+                        <h3 class="text-slate-400 text-sm font-medium mb-1">Ordens Ativas</h3>
+                        <p class="text-3xl font-bold text-slate-100">24</p>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="glass-panel p-6 rounded-2xl hover-lift">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-purple-500/10 rounded-xl text-purple-400">
+                                <i data-lucide="wrench" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-lg border border-emerald-500/20">+5%</span>
+                        </div>
+                        <h3 class="text-slate-400 text-sm font-medium mb-1">Mecânicos Disp.</h3>
+                        <p class="text-3xl font-bold text-slate-100">8</p>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="glass-panel p-6 rounded-2xl hover-lift">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400">
+                                <i data-lucide="check-circle" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-lg border border-emerald-500/20">+18%</span>
+                        </div>
+                        <h3 class="text-slate-400 text-sm font-medium mb-1">Concluídos (Mês)</h3>
+                        <p class="text-3xl font-bold text-slate-100">142</p>
+                    </div>
+                    <!-- Card 4 -->
+                    <div class="glass-panel p-6 rounded-2xl hover-lift">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-3 bg-amber-500/10 rounded-xl text-amber-400">
+                                <i data-lucide="alert-circle" class="w-6 h-6"></i>
+                            </div>
+                            <span class="text-xs font-bold text-red-400 bg-red-500/10 px-2 py-1 rounded-lg border border-red-500/20">-2%</span>
+                        </div>
+                        <h3 class="text-slate-400 text-sm font-medium mb-1">Atrasados</h3>
+                        <p class="text-3xl font-bold text-slate-100">3</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel rounded-2xl p-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-bold text-slate-100">Atividades Recentes</h3>
+                        <button class="text-indigo-400 text-sm font-medium hover:text-indigo-300">Ver tudo</button>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl border border-slate-700/50 hover:bg-slate-800 transition-colors">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400">
+                                    <i data-lucide="user" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-bold text-slate-200">Roberto iniciou OS #1234</p>
+                                    <p class="text-xs text-slate-500">Há 15 minutos • Toyota Corolla</p>
+                                </div>
+                            </div>
+                            <span class="text-xs font-medium text-indigo-400 bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">Em Andamento</span>
+                        </div>
+                        <div class="flex items-center justify-between p-4 bg-slate-800/50 rounded-xl border border-slate-700/50 hover:bg-slate-800 transition-colors">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                                    <i data-lucide="check" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-bold text-slate-200">OS #1230 Finalizada</p>
+                                    <p class="text-xs text-slate-500">Há 2 horas • Honda Civic</p>
+                                </div>
+                            </div>
+                            <span class="text-xs font-medium text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">Concluído</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: VEHICLES -->
+            <div id="view-vehicles" class="view-section">
+                <div class="max-w-4xl mx-auto">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-slate-100 tracking-tight">Cadastro de Veículo</h2>
+                    </div>
+                    
+                    <div class="glass-panel rounded-2xl p-8">
+                        <form id="form-vehicle" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="md:col-span-1">
+                                <label class="block text-sm font-medium text-slate-400 mb-2">Placa</label>
+                                <input name="placa" type="text" placeholder="ABC-1234" class="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none uppercase transition-all text-slate-200 placeholder-slate-600" required>
+                            </div>
+                            <div class="md:col-span-1">
+                                <label class="block text-sm font-medium text-slate-400 mb-2">Marca</label>
+                                <input name="marca" type="text" placeholder="Ex: Toyota" class="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all text-slate-200 placeholder-slate-600" required>
+                            </div>
+                            <div class="md:col-span-1">
+                                <label class="block text-sm font-medium text-slate-400 mb-2">Modelo</label>
+                                <input name="modelo" type="text" placeholder="Ex: Corolla" class="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all text-slate-200 placeholder-slate-600" required>
+                            </div>
+                            <div class="md:col-span-1">
+                                <label class="block text-sm font-medium text-slate-400 mb-2">Ano</label>
+                                <input name="ano" type="number" placeholder="2023" class="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all text-slate-200 placeholder-slate-600">
+                            </div>
+                            <div class="md:col-span-1">
+                                <label class="block text-sm font-medium text-slate-400 mb-2">Cor</label>
+                                <input name="cor" type="text" placeholder="Ex: Prata" class="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all text-slate-200 placeholder-slate-600">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-slate-400 mb-2">Nome do Proprietário</label>
+                                <input type="text" placeholder="Nome completo" class="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all text-slate-200 placeholder-slate-600" required>
+                            </div>
+                            <div class="md:col-span-2 flex justify-end mt-4">
+                                <button type="submit" class="flex items-center bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-medium py-3 px-8 rounded-xl shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 transition-all transform hover:-translate-y-0.5">
+                                    <i data-lucide="save" class="w-4 h-4 mr-2"></i> Salvar Veículo
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: MECHANICS -->
+            <div id="view-mechanics" class="view-section">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Form -->
+                    <div class="lg:col-span-1">
+                        <div class="glass-panel rounded-2xl p-6 sticky top-6">
+                            <h3 class="text-lg font-bold text-slate-100 mb-6 flex items-center">
+                                <div class="bg-indigo-500/10 p-2 rounded-lg mr-3">
+                                    <i data-lucide="user-plus" class="text-indigo-400 w-5 h-5"></i>
+                                </div>
+                                Novo Mecânico
+                            </h3>
+                            <form id="form-mechanic" class="space-y-5">
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Nome</label>
+                                    <input name="nome" type="text" class="w-full px-4 py-2.5 bg-slate-800/50 border border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm transition-all text-slate-200" required>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">CPF</label>
+                                    <input name="cpf" type="text" class="w-full px-4 py-2.5 bg-slate-800/50 border border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm transition-all text-slate-200" required>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Especialidade</label>
+                                    <div class="relative">
+                                        <select name="especialidade" class="w-full px-4 py-2.5 bg-slate-800/50 border border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm appearance-none cursor-pointer transition-all text-slate-200">
+                                            <option>Motor</option>
+                                            <option>Elétrica</option>
+                                            <option>Suspensão</option>
+                                        </select>
+                                        <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                            <i data-lucide="chevron-down" class="w-4 h-4 text-slate-500"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="w-full bg-slate-800 hover:bg-slate-700 text-white py-3 rounded-xl text-sm font-bold shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 border border-slate-700">Cadastrar</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- List -->
+                    <div id="mechanics-list-container" class="lg:col-span-2">
+                        <h3 class="text-lg font-bold text-slate-100 mb-4">Equipe Ativa</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: NEW ORDER -->
+            <div id="view-new-order" class="view-section">
+                <div class="max-w-5xl mx-auto">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-bold text-slate-100 flex items-center tracking-tight">
+                            <div class="bg-indigo-500/10 p-2 rounded-lg mr-3">
+                                <i data-lucide="file-plus" class="text-indigo-400 w-6 h-6"></i>
+                            </div>
+                            Nova Ordem de Serviço
+                        </h2>
+                        <span class="bg-blue-500/10 text-blue-400 text-xs font-bold px-3 py-1 rounded-full border border-blue-500/20">OS #PROVISÓRIA</span>
+                    </div>
+
+                    <div class="glass-panel rounded-2xl overflow-hidden">
+                        <div class="p-8 border-b border-slate-700/50 grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div>
+                                <label class="block text-sm font-bold text-slate-400 mb-2">Selecione o Veículo</label>
+                                <div class="relative">
+                                    <select id="os-vehicle-select" class="w-full p-3 bg-slate-800/50 border border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none appearance-none cursor-pointer transition-all text-slate-200">
+                                        <option value="">Buscar placa...</option>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none">
+                                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-500"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-400 mb-2">Mecânico Responsável</label>
+                                <div class="relative">
+                                    <select id="os-mechanic-select" class="w-full p-3 bg-slate-800/50 border border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none appearance-none cursor-pointer transition-all text-slate-200">
+                                        <option value="">Selecione...</option>
+                                    </select>
+                                    <div class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none">
+                                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-500"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-8">
+                            <h3 class="text-lg font-bold text-slate-100 mb-6">Peças e Serviços</h3>
+                            
+                            <!-- Add Item Row -->
+                            <div class="flex flex-col md:flex-row gap-4 items-end mb-8 bg-slate-800/30 p-6 rounded-xl border border-slate-700/50">
+                                <div class="flex-grow">
+                                    <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Descrição</label>
+                                    <input type="text" id="item-desc" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-slate-200" placeholder="Ex: Troca de Óleo">
+                                </div>
+                                <div class="w-24">
+                                    <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Qtd</label>
+                                    <input type="number" id="item-qty" value="1" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-slate-200">
+                                </div>
+                                <div class="w-32">
+                                    <label class="block text-xs font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Valor Unit.</label>
+                                    <input type="number" id="item-price" class="w-full p-2.5 bg-slate-800 border border-slate-700 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-slate-200" placeholder="0.00">
+                                </div>
+                                <button onclick="serviceOrder.addItem()" class="bg-indigo-600 text-white p-2.5 rounded-lg hover:bg-indigo-700 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                                    <i data-lucide="plus" class="w-5 h-5"></i>
+                                </button>
+                            </div>
+
+                            <!-- Dynamic Table -->
+                            <div class="border border-slate-700/50 rounded-xl overflow-hidden bg-slate-800/20 backdrop-blur-sm">
+                                <table class="w-full text-left" id="order-table">
+                                    <thead class="bg-slate-800/80 text-slate-400 text-xs uppercase font-bold tracking-wider">
+                                        <tr>
+                                            <th class="px-6 py-4">Descrição</th>
+                                            <th class="px-6 py-4 text-center">Qtd</th>
+                                            <th class="px-6 py-4 text-right">Unitário</th>
+                                            <th class="px-6 py-4 text-right">Total</th>
+                                            <th class="px-6 py-4 text-center">Ação</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-slate-700/50">
+                                        <tr id="empty-row">
+                                            <td colspan="5" class="px-6 py-12 text-center text-slate-500 text-sm italic">Nenhum item adicionado à ordem de serviço.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="p-8 bg-slate-800/30 border-t border-slate-700/50 flex justify-between items-center">
+                            <div class="text-right w-full flex justify-end gap-8 items-center">
+                                <div>
+                                    <p class="text-sm text-slate-500 font-medium">Total Final</p>
+                                    <p class="text-4xl font-bold text-indigo-400 tracking-tight" id="order-total">R$ 0.00</p>
+                                </div>
+                                <button onclick="serviceOrder.finalize()" class="bg-slate-800 hover:bg-slate-700 text-white px-10 py-4 rounded-xl font-bold flex items-center shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-1 border border-slate-700">
+                                    <i data-lucide="check-circle" class="w-5 h-5 mr-2"></i> Finalizar OS
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: HISTORY -->
+            <div id="view-history" class="view-section">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+                    <h2 class="text-2xl font-bold text-slate-100 tracking-tight">Histórico de Serviços</h2>
+                    <div class="relative w-full md:w-96">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+                            <i data-lucide="search" class="w-4 h-4"></i>
+                        </div>
+                        <input type="text" class="block w-full pl-10 pr-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none text-sm transition-all shadow-sm text-slate-200 placeholder-slate-600" placeholder="Buscar por placa, ID ou cliente...">
+                    </div>
+                </div>
+
+                <div class="glass-panel rounded-2xl overflow-hidden">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-slate-800/50 border-b border-slate-700/50">
+                            <tr>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">ID</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Data</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Veículo</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Total</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body" class="divide-y divide-slate-700/50">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="index.js"></script>
+</body>
+</html>

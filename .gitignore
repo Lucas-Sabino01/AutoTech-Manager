@@ -1,0 +1,36 @@
+# Embarcadero specific
+EmbarcaderoFiles/
+__history/
+__recovery/
+*.tds
+*.obj
+*.o
+*.exe
+*.dll
+*.bpl
+*.bpi
+*.dcp
+*.so
+*.dylib
+*.a
+*.lib
+*.res
+*.map
+*.dcu
+*.ident
+*.tvsconfig
+*.local
+*.groupproj.local
+
+# C++ specific
+*.exe
+*.o
+*.obj
+*.dll
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+node_modules
+DiagramasUML.html
