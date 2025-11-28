@@ -78,7 +78,7 @@ A implementação reflete fielmente o diagrama de classes.
 1.  **Clone o repositório:**
 
     ```bash
-    git clone https://github.com/lucas-sabino/AvaliaçãoParcial2
+    git clone [https://github.com/lucas-sabino/AvaliaçãoParcial2](https://github.com/Lucas-Sabino01/AutoTech-Manager)    
     ```
 
 2.  **Navegue até a pasta do projeto:**
